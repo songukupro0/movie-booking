@@ -1,68 +1,242 @@
-<main class="home-page">
+<main class="home-page-dark">
   <!-- Banner -->
   <app-home-banner></app-home-banner>
 
-  <div class="container">
-    <section class="category-section">
-      <h2 class="section-title">Thể Loại Phim</h2>
-      <div class="category-grid">
-        <div class="category-item" *ngFor="let cat of categories">
-          <span>{{ cat }}</span>
+  <!-- ══ MUA VÉ NHANH ══════════════════════════════════════════ -->
+  <div class="quick-booking-wrapper">
+    <div class="quick-booking-bar">
+
+      <!-- 1. Chọn Phim -->
+      <div class="qb-dropdown" [class.active]="openDropdown === 'movie'" [class.selected]="selectedMovie">
+        <div class="qb-trigger" (click)="toggleDropdown('movie')">
+          <span class="qb-number">1</span>
+          <div class="qb-text">
+            <ng-container *ngIf="!selectedMovie">
+              <span class="qb-placeholder">Chọn Phim</span>
+            </ng-container>
+            <ng-container *ngIf="selectedMovie">
+              <span class="qb-label">Chọn Phim</span>
+              <span class="qb-value">{{ selectedMovie.title }}</span>
+            </ng-container>
+          </div>
+          <svg class="qb-arrow" [class.open]="openDropdown === 'movie'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
-      </div>
-    </section>
-
-
-    <section class="mid-banner">
-      <div class="mid-banner-inner">
-        <h2>Thứ 3 Vui Vẻ - Đồng Giá 50K</h2>
-        <p>Áp dụng cho mọi suất chiếu, mọi cụm rạp trên toàn quốc vào mỗi thứ 3 hàng tuần.</p>
-        <button class="btn-outline">Tìm hiểu thêm</button>
-      </div>
-    </section>
-
-    <section class="movie-section">
-      <div class="section-header">
-        <h2 class="section-title">Top Trending</h2>
-      </div>
-      <div class="movie-grid">
-        <article class="movie-card" *ngFor="let movie of bestSellers">
-          <div class="card-image">
-            <img [src]="movie.image" [alt]="movie.title">
-            <div class="card-overlay">
-              <button class="btn-book">Mua Vé Ngay</button>
+        <div class="qb-menu" *ngIf="openDropdown === 'movie'">
+          <div class="qb-movie-item" *ngFor="let m of qbMovies" (click)="selectMovie(m)" [class.active]="selectedMovie?._id === m._id">
+            <img [src]="m.image" [alt]="m.title">
+            <div class="qb-movie-info">
+              <span class="qb-movie-title">{{ m.title }}</span>
+              <span class="qb-movie-age" *ngIf="m.ageRating">{{ m.ageRating }}</span>
             </div>
           </div>
-          <div class="card-content">
-            <h3 class="movie-title">{{ movie.title }}</h3>
-            <p class="movie-genre">{{ movie.genre }}</p>
-          </div>
-        </article>
+          <div class="qb-empty" *ngIf="qbMovies.length === 0">Đang tải...</div>
+        </div>
       </div>
-    </section>
 
-    <section class="review-section">
-      <h2 class="section-title text-center">Đánh Giá Từ Mọt Phim</h2>
-      <div class="review-grid">
-        <div class="review-card" *ngFor="let review of reviews">
-          <p class="review-text">"{{ review.content }}"</p>
-          <div class="reviewer">
-            <img [src]="review.avatar" alt="Avatar" class="avatar">
-            <span class="name">{{ review.name }}</span>
+      <div class="qb-sep">›</div>
+
+      <!-- 2. Chọn Rạp -->
+      <div class="qb-dropdown" [class.active]="openDropdown === 'cinema'" [class.disabled]="!selectedMovie">
+        <div class="qb-trigger" (click)="selectedMovie && toggleDropdown('cinema')">
+          <span class="qb-number">2</span>
+          <div class="qb-text">
+            <span class="qb-label">Chọn Rạp</span>
+            <span class="qb-value" *ngIf="selectedCinema">{{ selectedCinema.name }}</span>
+          </div>
+          <svg class="qb-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="qb-menu" *ngIf="openDropdown === 'cinema'">
+          <div class="qb-item" *ngFor="let c of qbCinemas" (click)="selectCinema(c)">
+            <div class="qb-cinema-info">
+              <span class="qb-cinema-name">{{ c.name }}</span>
+              <span class="qb-cinema-addr">{{ c.address }}, {{ c.city }}</span>
+            </div>
+          </div>
+          <div class="qb-empty" *ngIf="qbCinemasLoading">Đang tải...</div>
+          <div class="qb-empty" *ngIf="!qbCinemasLoading && qbCinemas.length === 0 && selectedMovie">Không có rạp chiếu</div>
+          <div class="qb-empty" *ngIf="!selectedMovie">Chọn phim trước</div>
+        </div>
+      </div>
+
+      <div class="qb-sep">›</div>
+
+      <!-- 3. Chọn Ngày -->
+      <div class="qb-dropdown" [class.active]="openDropdown === 'date'" [class.disabled]="!selectedCinema">
+        <div class="qb-trigger" (click)="selectedCinema && toggleDropdown('date')">
+          <span class="qb-number">3</span>
+          <div class="qb-text">
+            <span class="qb-label">Chọn Ngày</span>
+            <span class="qb-value" *ngIf="selectedDate">{{ formatDate(selectedDate) }}</span>
+          </div>
+          <svg class="qb-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="qb-menu qb-dates-menu" *ngIf="openDropdown === 'date'">
+          <div class="qb-date-item" *ngFor="let d of qbDates" (click)="selectDate(d)" [class.selected]="d === selectedDate">
+            {{ formatDate(d) }}
+          </div>
+          <div class="qb-empty" *ngIf="qbDatesLoading">Đang tải...</div>
+          <div class="qb-empty" *ngIf="!qbDatesLoading && qbDates.length === 0 && selectedCinema">Không có suất chiếu</div>
+          <div class="qb-empty" *ngIf="!selectedCinema">Chọn rạp trước</div>
+        </div>
+      </div>
+
+      <div class="qb-sep">›</div>
+
+      <!-- 4. Chọn Suất -->
+      <div class="qb-dropdown" [class.active]="openDropdown === 'showtime'" [class.disabled]="!selectedDate">
+        <div class="qb-trigger" (click)="selectedDate && toggleDropdown('showtime')">
+          <span class="qb-number">4</span>
+          <div class="qb-text">
+            <span class="qb-label">Chọn Suất</span>
+            <span class="qb-value" *ngIf="selectedShowtime">{{ formatTime(selectedShowtime.startTime) }}</span>
+          </div>
+          <svg class="qb-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="qb-menu qb-showtime-menu" *ngIf="openDropdown === 'showtime'">
+          <div class="qb-st-item" *ngFor="let st of qbShowtimes" (click)="selectShowtime(st)" [class.selected]="selectedShowtime?._id === st._id">
+            <span class="qb-st-time">{{ formatTime(st.startTime) }}</span>
+            <span class="qb-st-price">{{ st.basePrice | number }}đ</span>
+          </div>
+          <div class="qb-empty" *ngIf="qbShowtimesLoading">Đang tải...</div>
+          <div class="qb-empty" *ngIf="!qbShowtimesLoading && qbShowtimes.length === 0 && selectedDate">Không có suất chiếu</div>
+          <div class="qb-empty" *ngIf="!selectedDate">Chọn ngày trước</div>
+        </div>
+      </div>
+
+      <!-- Nút Mua Vé -->
+      <button class="btn-mua-ve-nhanh" [class.ready]="canBook()" [disabled]="!canBook()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20 12a8 8 0 1 0-16 0 8 8 0 0 0 16 0zm2 0A10 10 0 1 1 2 12a10 10 0 0 1 20 0zM9.5 15.5v-7L16 12l-6.5 3.5z"/></svg>
+        Mua Vé Nhanh
+      </button>
+    </div>
+  </div>
+  <div class="container dark-container">
+    <!-- Layout: Phim (trái) + Trending Sidebar (phải) -->
+    <div class="home-main-layout">
+
+      <!-- ── PHIM Section (chiếm phần lớn) ─────────────────── -->
+      <section class="movie-section-tabs">
+        <div class="section-header-tabs">
+          <h2 class="section-title-blue"><span class="line-blue">|</span> PHIM</h2>
+          <div class="tabs">
+            <button [class.active]="activeMovieTab === 'now-showing'" (click)="switchMovieTab('now-showing')">Đang chiếu</button>
+            <button [class.active]="activeMovieTab === 'coming-soon'" (click)="switchMovieTab('coming-soon')">Sắp chiếu</button>
+          </div>
+        </div>
+
+        <div class="movie-grid-galaxy" *ngIf="activeMovieTab === 'now-showing'">
+          <article class="movie-card-galaxy" *ngFor="let movie of nowShowingMovies | async">
+            <div class="card-image">
+              <img [src]="movie.image" [alt]="movie.title" [routerLink]="['/movies', movie.slug]" style="cursor: pointer;">
+              <div class="card-overlay">
+                <button class="btn-buy-ticket" >🎟 Mua vé</button>
+                <button class="btn-trailer" [routerLink]="['/movies', movie.slug]">▶ Trailer</button>
+              </div>
+              <div class="star-rating" *ngIf="movie.vote">{{ movie.vote }}</div>
+              <div class="age-rating">{{ movie.ageRating || 'T18' }}</div>
+            </div>
+            <div class="card-content">
+              <h3 class="movie-title" [routerLink]="['/movies', movie.slug]" style="cursor: pointer;">{{ movie.title }}</h3>
+            </div>
+          </article>
+        </div>
+
+        <div class="movie-grid-galaxy" *ngIf="activeMovieTab === 'coming-soon'">
+          <article class="movie-card-galaxy" *ngFor="let movie of comingSoonMovies | async">
+            <div class="card-image">
+              <img [src]="movie.image" [alt]="movie.title" [routerLink]="['/movies', movie.slug]" style="cursor: pointer;">
+              <div class="card-overlay">
+                <button class="btn-buy-ticket" >🎟 Mua vé</button>
+                <button class="btn-trailer" [routerLink]="['/movies', movie.slug]">▶ Trailer</button>
+              </div>
+              <div class="star-rating" *ngIf="movie.vote">{{ movie.vote }}</div>
+              <div class="age-rating">{{ movie.ageRating || 'P' }}</div>
+            </div>
+            <div class="card-content">
+              <h3 class="movie-title" [routerLink]="['/movies', movie.slug]" style="cursor: pointer;">{{ movie.title }}</h3>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ── TOP TRENDING Sidebar Widget ───────────────────── -->
+      <aside class="trending-widget" *ngIf="topTrendingMovies | async as trendList">
+        <div class="tw-header">
+          <span class="tw-fire">🔥</span>
+          <span class="tw-title">TOP 5 TUẦN NÀY</span>
+        </div>
+
+        <div class="tw-list">
+          <a class="tw-item" *ngFor="let movie of trendList; let i = index"
+             [routerLink]="['/movies', movie.slug]"
+             [class.tw-top1]="i === 0">
+
+            <!-- Rank number -->
+            <span class="tw-rank" [class.tw-rank-gold]="i === 0"
+                                  [class.tw-rank-silver]="i === 1"
+                                  [class.tw-rank-bronze]="i === 2">
+              {{ i + 1 }}
+            </span>
+
+            <!-- Poster nhỏ -->
+            <img class="tw-poster" [src]="movie.image" [alt]="movie.title">
+
+            <!-- Info -->
+            <div class="tw-info">
+              <p class="tw-name">{{ movie.title }}</p>
+              <span class="tw-score" *ngIf="movie.vote">★ {{ movie.vote }}</span>
+            </div>
+          </a>
+        </div>
+      </aside>
+
+    </div><!-- end home-main-layout -->
+
+  </div><!-- end dark-container -->
+
+  <div class="container dark-container">
+
+    <!-- GÓC ĐIỆN ẢNH Section -->
+    <section class="blog-section">
+      <div class="section-header-tabs">
+        <h2 class="section-title-blue"><span class="line-blue">|</span> <a routerLink="/reviews" style="text-decoration: none; color: inherit; cursor: pointer;">GÓC ĐIỆN ẢNH</a></h2>
+        <div class="tabs">
+          <button class="active">Bình luận phim</button>
+          <button>Blog điện ảnh</button>
+        </div>
+      </div>
+      <div class="blog-grid" *ngIf="posts$ | async as posts">
+        <div class="featured-blog" *ngIf="featuredReview">
+          <img [src]="featuredReview.image" alt="Featured">
+          <p class="overlay-title">{{ featuredReview.title }}</p>
+        </div>
+        <div class="side-blogs">
+          <div class="side-blog-item" *ngFor="let blog of posts.slice(1)">
+            <img [src]="blog.image" alt="Blog Thumb">
+            <div class="blog-info">
+              <h4 class="blog-title">{{ blog.title }}</h4>
+              <div class="blog-meta">
+                <button class="btn-like">Thích</button>
+                <span class="views">{{ blog.likes }}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="newsletter-section">
-      <div class="newsletter-box">
-        <h2>Nhận Ưu Đãi Mới Nhất</h2>
-        <p>Đăng ký email để không bỏ lỡ những bộ phim bom tấn và khuyến mãi độc quyền.</p>
-        <form class="newsletter-form">
-          <input type="email" placeholder="Nhập email của bạn..." required>
-          <button type="submit" class="btn-primary">Đăng Ký</button>
-        </form>
+    <!-- TIN KHUYẾN MÃI Section -->
+    <section class="promo-section" style="margin-bottom: 60px;">
+      <div class="section-header-tabs">
+        <h2 class="section-title-blue"><span class="line-blue">|</span> <a routerLink="/promotions" style="text-decoration: none; color: inherit; cursor: pointer;">TIN KHUYẾN MÃI</a></h2>
+      </div>
+      <div class="promo-grid" *ngIf="promotions$ | async as promotions">
+        <div class="promo-card" *ngFor="let promo of promotions">
+          <img [src]="promo.image" alt="Promo">
+          <p class="promo-title">{{ promo.title }}</p>
+        </div>
       </div>
     </section>
+
   </div>
 </main>

@@ -1,1 +1,36 @@
-<p>register works!</p>
+<section class="auth-page">
+  <div class="auth-card">
+    <h1>Tạo tài khoản</h1>
+    <p class="subtitle">Đăng ký để lưu lịch sử đặt vé và nhận ưu đãi thành viên.</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form">
+      <label>
+        <span>Họ và tên</span>
+        <input type="text" formControlName="fullName" placeholder="Nguyễn Văn A" />
+      </label>
+
+      <label>
+        <span>Email</span>
+        <input type="email" formControlName="email" placeholder="you@example.com" />
+      </label>
+
+      <label>
+        <span>Số điện thoại</span>
+        <input type="text" formControlName="phone" placeholder="09xx xxx xxx" />
+      </label>
+
+      <label>
+        <span>Mật khẩu</span>
+        <input type="password" formControlName="password" placeholder="••••••••" />
+      </label>
+
+      <p class="error" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+
+      <button type="submit" [disabled]="isSubmitting()">
+        {{ isSubmitting() ? 'Đang tạo tài khoản...' : 'Đăng ký' }}
+      </button>
+    </form>
+
+    <p class="switch-link">Đã có tài khoản? <a routerLink="/auth/login">Đăng nhập</a></p>
+  </div>
+</section>

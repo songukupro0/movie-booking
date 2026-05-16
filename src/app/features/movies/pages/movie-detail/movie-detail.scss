@@ -1,0 +1,198 @@
+$bg-dark: #121212;
+$bg-card: #1e1e1e;
+$text-main: #ffffff;
+$text-muted: #a0a0a0;
+$primary-orange: #f26b38;
+$primary-blue: #034ea2;
+$border-color: #333333;
+
+.dark-theme-wrapper {
+  background-color: $bg-dark;
+  color: $text-main;
+  min-height: 100vh;
+  padding: 40px 0;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.layout-grid {
+  display: grid;
+  grid-template-columns: 7fr 3fr; // Tỷ lệ 7:3 giống ảnh
+  gap: 40px;
+  align-items: start;
+}
+
+/* --- CỘT TRÁI --- */
+
+
+.movie-info-section {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 40px;
+
+  .poster {
+    width: 220px;
+    flex-shrink: 0;
+    img { width: 100%; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+  }
+
+  .details {
+    flex-grow: 1;
+
+    .title {
+      font-size: 2rem; margin: 0 0 15px 0; display: flex; align-items: center; gap: 10px;
+      .age-tag { background: #f26b38; font-size: 1rem; padding: 2px 8px; border-radius: 4px; font-weight: bold; }
+    }
+
+    .meta-row { color: #a0a0a0; margin-bottom: 10px; display: flex; gap: 20px; }
+    .rating-row { margin-bottom: 20px; .star { color: #f5c518; font-weight: bold; font-size: 1.2rem; } .vote-count { color: #a0a0a0; font-size: 0.9rem; } }
+
+    .info-list {
+      list-style: none; padding: 0; margin: 0;
+      li {
+        margin-bottom: 15px; display: flex; align-items: flex-start;
+        .label { width: 120px; color: #a0a0a0; flex-shrink: 0; }
+        .badge { border: 1px solid #333333; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; margin-right: 10px; display: inline-block; }
+        .genre-badges { display: flex; flex-wrap: wrap; gap: 10px; }
+        .cast-badges { display: flex; flex-wrap: wrap; gap: 10px; }
+      }
+    }
+  }
+}
+
+.section-block {
+  margin-bottom: 40px;
+  .section-title { font-size: 1.2rem; border-left: 4px solid $primary-blue; padding-left: 10px; margin-bottom: 20px; text-transform: uppercase; }
+  .description-text { color: #cccccc; line-height: 1.8; text-align: justify; }
+
+  .trailer-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; // Tỷ lệ 16:9
+    height: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    margin-bottom: 30px;
+    background-color: #000;
+
+    iframe, .movie-banner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .movie-banner {
+      background-size: cover;
+      background-position: center;
+      
+      .overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        .play-btn {
+          width: 70px; height: 70px;
+          border-radius: 50%;
+          background: rgba(0,0,0,0.6);
+          border: 3px solid #fff;
+          color: #fff;
+          font-size: 30px;
+          cursor: pointer;
+          transition: all 0.3s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding-left: 5px; 
+          outline: none;
+          
+          &:hover { 
+            background: $primary-orange;
+            border-color: $primary-orange;
+            transform: scale(1.1);
+          }
+        }
+      }
+    }
+  }
+}
+
+.date-tabs {
+  display: flex; gap: 2px; margin-bottom: 30px; border-bottom: 1px solid $border-color; padding-bottom: 10px;
+  
+  .date-btn {
+    background: transparent; border: none; color: $text-muted; padding: 10px 20px; cursor: pointer; display: flex; flex-direction: column; align-items: center; border-radius: 8px; transition: 0.3s;
+    .day { font-size: 0.9rem; margin-bottom: 5px; }
+    .date { font-size: 1.2rem; font-weight: bold; }
+    
+    &.active { background: $primary-blue; color: $text-main; }
+    &:hover:not(.active) { background: $bg-card; }
+  }
+}
+
+.cinema-list {
+  display: flex; flex-direction: column; gap: 20px;
+
+  .cinema-card {
+    background: $bg-card; padding: 20px; border-radius: 8px;
+    
+    .cinema-name { font-size: 1.1rem; margin: 0 0 15px 0; color: $text-main; }
+    
+    .showtime-format {
+      display: flex; align-items: center; margin-bottom: 10px;
+      .format-label { width: 200px; color: $text-muted; font-size: 0.9rem; }
+      
+      .time-buttons {
+        display: flex; gap: 10px; flex-wrap: wrap;
+        .time-btn { background: transparent; border: 1px solid $border-color; color: $text-main; padding: 8px 20px; border-radius: 4px; cursor: pointer; transition: 0.3s;
+          &:hover { border-color: $primary-orange; color: $primary-orange; }
+        }
+      }
+    }
+  }
+}
+
+/* --- CỘT PHẢI --- */
+.sidebar {
+  .section-title { font-size: 1.2rem; border-left: 4px solid $primary-blue; padding-left: 10px; margin-bottom: 20px; }
+  
+  .sidebar-movie-list {
+    display: flex; flex-direction: column; gap: 15px;
+    
+    .side-movie-card {
+      position: relative; border-radius: 8px; overflow: hidden; aspect-ratio: 16/9; cursor: pointer;
+      img { width: 100%; height: 100%; object-fit: cover; }
+      
+      .card-overlay {
+        position: absolute; bottom: 0; left: 0; right: 0; padding: 10px; background: linear-gradient(transparent, rgba(0,0,0,0.9));
+        .sm-title { margin: 0 0 5px 0; font-size: 1rem; }
+        .sm-meta { display: flex; justify-content: space-between; font-size: 0.8rem;
+          .sm-age { background: $primary-orange; padding: 2px 6px; border-radius: 3px; font-weight: bold; }
+          .sm-rating { color: #f5c518; font-weight: bold; }
+        }
+      }
+    }
+
+    .view-more-btn { background: transparent; border: 1px solid $primary-orange; color: $primary-orange; padding: 10px; border-radius: 4px; cursor: pointer; margin-top: 10px; font-weight: bold; transition: 0.3s;
+      &:hover { background: $primary-orange; color: $text-main; }
+    }
+  }
+}
+
+/* Reponsive cơ bản */
+@media (max-width: 992px) {
+  .layout-grid { grid-template-columns: 1fr; } /* Chuyển thành 1 cột trên màn hình nhỏ */
+  .movie-info-section { flex-direction: column; align-items: center; text-align: center; 
+    .info-list li { flex-direction: column; align-items: center; .label { width: auto; margin-bottom: 5px; } }
+  }
+}

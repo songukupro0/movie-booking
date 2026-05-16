@@ -1,1 +1,126 @@
-<p>search-page works!</p>
+<section class="search-page">
+
+  <!-- ── Search Box Panel ────────────────────────────────────────────── -->
+  <div class="search-box">
+    <div class="search-box__header">
+      <h1>Tìm kiếm phim</h1>
+      <p class="search-hint">Nhập tên phim, diễn viên hoặc thể loại bạn muốn tìm</p>
+    </div>
+
+    <!-- SearchBar component — giao tiếp qua SearchService provider -->
+    <app-search-bar
+      [initialValue]="initialKeyword"
+      (searchChange)="onSearchChange($event)"
+    />
+  </div>
+
+  <!-- ── State-driven content ────────────────────────────────────────── -->
+  @if (state$ | async; as state) {
+
+    <!-- Loading: Skeleton -->
+    @if (state.loading) {
+      <div class="search-results" aria-live="polite" aria-busy="true">
+        <div class="loading-status">
+          <span class="pulse"></span>
+          <span>Đang tìm kiếm<span class="dots">...</span></span>
+        </div>
+        @for (i of [1,2,3]; track i) {
+          <div class="skeleton-result">
+            <div class="skel skel-poster"></div>
+            <div class="skel-lines">
+              <div class="skel skel-line w-70"></div>
+              <div class="skel skel-line w-50"></div>
+              <div class="skel skel-line w-35"></div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Error -->
+    @else if (state.error) {
+      <div class="empty-state">
+        <div class="empty-icon">⚠️</div>
+        <p>{{ state.error }}</p>
+      </div>
+    }
+
+    <!-- Results -->
+    @else if (state.searched && !state.loading) {
+
+      <!-- Filter tabs (chỉ hiển thị khi có kết quả gốc) -->
+      @if (state.results.length > 0) {
+        <div class="filter-bar" role="group" aria-label="Lọc kết quả">
+          @for (option of filterOptions; track option.value) {
+            <button
+              class="filter-chip"
+              [class.active]="state.filter === option.value"
+              (click)="setFilter(option.value)"
+              [id]="'filter-' + option.value"
+            >
+              {{ option.label }}
+            </button>
+          }
+        </div>
+      }
+
+      @if (filteredResults$ | async; as results) {
+
+        <!-- Result list -->
+        @if (results.length > 0) {
+          <div class="search-results" aria-live="polite">
+            <p class="result-count">
+              Tìm thấy <strong>{{ results.length }}</strong>
+              phim{{ state.filter !== 'all' ? ' (' + state.filter + ')' : '' }}
+              cho "<em>{{ state.keyword }}</em>"
+            </p>
+
+            @for (movie of results; track movie._id) {
+              <a class="movie-card" [routerLink]="['/movies', movie.slug]" [id]="'movie-' + movie._id">
+                <img [src]="movie.image" [alt]="movie.title" loading="lazy" />
+                <div class="movie-info">
+                  <h3>{{ movie.title }}</h3>
+                  <p class="meta">
+                    <span>{{ movie.duration }} phút</span>
+                    <span class="dot">•</span>
+                    <span>{{ movie.ageRating }}</span>
+                    @if (movie.country) {
+                      <span class="dot">•</span>
+                      <span>{{ movie.country }}</span>
+                    }
+                  </p>
+                  @if (movie.genre) {
+                    <p class="genre">
+                      <span>{{ movie.genre.name || movie.genre }}</span>
+                    </p>
+                  }
+                  <span class="status-chip" [class.now-showing]="movie.status === 'now-showing'" [class.coming-soon]="movie.status === 'coming-soon'">
+                    <span class="status-dot"></span>
+                    {{ getStatusLabel(movie.status) }}
+                  </span>
+                </div>
+              </a>
+            }
+          </div>
+        }
+
+        <!-- No results after filter -->
+        @else if (state.results.length > 0) {
+          <div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <p>Không có phim nào trong trạng thái "<strong>{{ state.filter }}</strong>".<br/>Thử chọn bộ lọc khác.</p>
+          </div>
+        }
+
+        <!-- No results at all -->
+        @else {
+          <div class="empty-state">
+            <div class="empty-icon">🎬</div>
+            <p>Không tìm thấy phim nào phù hợp với "<strong>{{ state.keyword }}</strong>".<br/>Thử từ khóa khác nhé!</p>
+          </div>
+        }
+      }
+    }
+  }
+
+</section>

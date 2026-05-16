@@ -1,0 +1,57 @@
+<div class="movie-page">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <h1 class="page-title">Phim {{ categoryName() }}</h1>
+      <p class="page-subtitle">Tuyển tập những siêu phẩm thể loại này</p>
+
+      <!-- Lọc phim theo trạng thái trong Từng Thể Loại -->
+      <div class="movie-tabs">
+        <button class="tab-pill" [class.active]="activeTab() === 'all'" (click)="switchTab('all')">Tất Cả</button>
+        <button class="tab-pill" [class.active]="activeTab() === 'now-showing'" (click)="switchTab('now-showing')">Đang Chiếu</button>
+        <button class="tab-pill" [class.active]="activeTab() === 'coming-soon'" (click)="switchTab('coming-soon')">Sắp Chiếu</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Movie Grid Section -->
+  <section class="movie-section">
+    <div class="container">
+      <div class="movie-grid" *ngIf="movies().length > 0">
+        <article class="movie-card" *ngFor="let movie of movies()" [routerLink]="['/movies', movie.slug]">
+          <div class="card-image-wrapper">
+            <img [src]="movie.image" [alt]="movie.title" class="card-image">
+            <div class="badges">
+              <span class="badge status status-now" *ngIf="movie.status === 'now-showing'">ĐANG CHIẾU</span>
+              <span class="badge status status-coming" *ngIf="movie.status === 'coming-soon'">SẮP CHIẾU</span>
+              <span class="badge age" *ngIf="movie.ageRating">{{ movie.ageRating }}</span>
+            </div>
+            <div class="card-overlay">
+              <button class="btn-book">Chi Tiết Của Phim</button>
+            </div>
+          </div>
+          <div class="card-content">
+            <h3 class="movie-title">{{ movie.title }}</h3>
+            <div class="movie-meta">
+              <span class="genre">{{ categoryName() }}</span>
+              <div class="rating" *ngIf="movie.vote">
+                <span class="star">★</span>
+                <span class="score">{{ movie.vote }}/10</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="!categoryData()">
+        <div class="spinner"></div>
+        <p>Đang tải danh sách phim...</p>
+      </div>
+
+      <div class="empty-state" *ngIf="categoryData() && movies().length === 0">
+        <p>GalaXy Movies sẽ sớm cập nhật thể loại này.</p>
+      </div>
+    </div>
+  </section>
+</div>

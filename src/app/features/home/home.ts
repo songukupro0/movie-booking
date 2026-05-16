@@ -1,28 +1,135 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { Movie } from '../../core/services/movie.service';
+import { HomeService } from '../../core/services/home.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.html',
-  styleUrls: ['./home.scss'],
+  styleUrl: './home.scss',
   standalone: false
 })
-export class Home {
-  // Mock Data cho giao diện
-  categories = ['Hành Động', 'Tình Cảm', 'Kinh Dị', 'Hài Hước', 'Khoa Học Viễn Tưởng', 'Hoạt Hình'];
-  
-  // Dữ liệu Featured Movies đã được chuyển sang MovieBannerComponent
-  
-  bestSellers = [
-    { title: 'Thỏ ơi', image: 'https://cdn.galaxycine.vn/media/2026/2/10/tho-oi-500_1770696594579.jpg', genre: 'Tâm lý, Gia đình', rating: '8.8' },
-    { title: 'Quỷ Nhập Tràng 2', image: 'https://cdn.galaxycine.vn/media/2026/2/26/quy-nhap-trang-2-500_1772097817869.jpg', genre: 'Kinh dị, Bí ẩn', rating: '8.9' },
-    { title: 'Tài', image: 'https://cdn.galaxycine.vn/media/2026/2/27/tai_1772174772211.jpg', genre: 'Tâm lý, Gia đình', rating: '8.0' },
-    { title: 'Cảm Ơn Người Đã Thức Cùng Tôi', image: 'https://cdn.galaxycine.vn/media/2026/2/24/cam-on-nguoi-da-thuc-cung-toi-500_1771925954223.jpg', genre: 'Tìm cảm, Tâm lý, Ca nhạc', rating: '9.1' },
-  ];
+export class Home implements OnInit {
 
-  reviews = [
-    { name: 'Nguyễn Văn A', content: 'Hệ thống đặt vé cực kỳ nhanh và mượt mà. Rất thích không gian thiết kế của web!', avatar: 'https://cdn.galaxycine.vn/media/c/h/chris-ngang_1.jpg' },
-    { name: 'Trần Thị B', content: 'Nhiều rạp chiếu, giá cả hợp lý và hay có nhiều chương trình khuyến mãi.', avatar: 'https://cdn.galaxycine.vn/media/g/a/gallery-1436740108-elle-aug-15-margot-robbie-02.jpg' },
-    { name: 'Lê Hoàng C', content: 'Tôi đã đặt vé xem Dune 2 ở đây, trải nghiệm UI/UX rất tốt, rõ ràng.', avatar: 'https://cdn.galaxycine.vn/media/t/h/theron-charlize-bannner.jpg' }
-  ];
-featuredMovies: any;
+  private homeService = inject(HomeService);
+
+  // ── Tabs phim ──────────────────────────────────────────────────
+  activeMovieTab: 'now-showing' | 'coming-soon' | 'top-trending' = 'now-showing';
+  nowShowingMovies!: Observable<Movie[]>;
+  comingSoonMovies!: Observable<Movie[]>;
+  topTrendingMovies!: Observable<Movie[]>;
+
+  // ── Posts / Promotions ────────────────────────────────────────
+  posts$!: Observable<any[]>;
+  promotions$!: Observable<any[]>;
+  featuredReview: any;
+
+  // ── Quick Booking state ───────────────────────────────────────
+  qbMovies: any[] = [];
+  qbCinemas: any[] = [];
+  qbDates: string[] = [];
+  qbShowtimes: any[] = [];
+
+  qbCinemasLoading = false;
+  qbDatesLoading = false;
+  qbShowtimesLoading = false;
+
+  selectedMovie: any = null;
+  selectedCinema: any = null;
+  selectedDate: string = '';
+  selectedShowtime: any = null;
+
+  // Dropdown open state
+  openDropdown: 'movie' | 'cinema' | 'date' | 'showtime' | null = null;
+
+  ngOnInit(): void {
+    this.nowShowingMovies = this.homeService.getNowShowing();
+    this.comingSoonMovies = this.homeService.getComingSoon();
+    this.topTrendingMovies = this.homeService.getTopTrending();
+    this.promotions$ = this.homeService.getPromotions();
+    this.posts$ = this.homeService.getPosts();
+
+    this.posts$.subscribe((data) => {
+      if (data && data.length > 0) this.featuredReview = data[0];
+    });
+
+    // Load danh sách phim cho quick booking
+    this.homeService.getQuickMovies().subscribe(movies => {
+      this.qbMovies = movies;
+    });
+  }
+
+  switchMovieTab(tab: 'now-showing' | 'coming-soon' | 'top-trending') {
+    this.activeMovieTab = tab;
+  }
+
+  // ── Quick Booking logic ─────────────────────────────────────
+  toggleDropdown(name: 'movie' | 'cinema' | 'date' | 'showtime') {
+    this.openDropdown = this.openDropdown === name ? null : name;
+  }
+
+  selectMovie(movie: any) {
+    this.selectedMovie = movie;
+    this.selectedCinema = null;
+    this.selectedDate = '';
+    this.selectedShowtime = null;
+    this.qbCinemas = [];
+    this.qbDates = [];
+    this.qbShowtimes = [];
+    this.openDropdown = null;
+    this.qbCinemasLoading = true;
+
+    this.homeService.getQuickCinemas(movie._id).subscribe(cinemas => {
+      this.qbCinemas = cinemas;
+      this.qbCinemasLoading = false;
+    });
+  }
+
+  selectCinema(cinema: any) {
+    this.selectedCinema = cinema;
+    this.selectedDate = '';
+    this.selectedShowtime = null;
+    this.qbDates = [];
+    this.qbShowtimes = [];
+    this.openDropdown = null;
+    this.qbDatesLoading = true;
+
+    this.homeService.getQuickDates(this.selectedMovie._id, cinema._id).subscribe(dates => {
+      this.qbDates = dates;
+      this.qbDatesLoading = false;
+    });
+  }
+
+  selectDate(date: string) {
+    this.selectedDate = date;
+    this.selectedShowtime = null;
+    this.qbShowtimes = [];
+    this.openDropdown = null;
+    this.qbShowtimesLoading = true;
+
+    this.homeService.getQuickShowtimes(
+      this.selectedMovie._id, this.selectedCinema._id, date
+    ).subscribe(showtimes => {
+      this.qbShowtimes = showtimes;
+      this.qbShowtimesLoading = false;
+    });
+  }
+
+  selectShowtime(st: any) {
+    this.selectedShowtime = st;
+    this.openDropdown = null;
+  }
+
+  formatTime(dateStr: string): string {
+    return new Date(dateStr).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  formatDate(dateStr: string): string {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('vi-VN', { weekday: 'short', day: '2-digit', month: '2-digit' });
+  }
+
+  canBook(): boolean {
+    return !!(this.selectedMovie && this.selectedCinema && this.selectedDate && this.selectedShowtime);
+  }
 }

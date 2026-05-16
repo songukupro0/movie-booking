@@ -1,1 +1,39 @@
-<p>review-list works!</p>
+<div class="reviews-page dark-theme">
+  <div class="container">
+    <div class="page-header">
+      <p class="eyebrow">GÓC ĐIỆN ẢNH</p>
+      <h1 class="page-title">Tin tức và bài viết nổi bật</h1>
+      <p class="page-subtitle">Cập nhật review, blog và các câu chuyện hậu trường để web luôn sống động, không còn trang trống.</p>
+    </div>
+
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Đang tải bài viết...</p>
+    </div>
+
+    <div *ngIf="!isLoading && posts.length === 0" class="empty-state">
+      <p>Hiện chưa có bài viết nào.</p>
+    </div>
+
+    <div class="news-grid" *ngIf="!isLoading && posts.length > 0">
+      <article class="news-card" *ngFor="let post of posts">
+        <div class="card-image-wrapper">
+          <img [src]="post.image" [alt]="post.title">
+          <div class="post-category">{{ post.type | uppercase }}</div>
+        </div>
+        <div class="card-content">
+          <div class="post-meta-top">
+            <span>{{ post.createdAt | date:'dd/MM/yyyy' }}</span>
+            <span>👁 {{ post.views || 0 }}</span>
+          </div>
+          <h3 class="post-title">{{ post.title }}</h3>
+          <p class="post-preview">{{ post.content }}</p>
+          <div class="post-meta">
+            <span>❤️ {{ post.likes || 0 }} lượt thích</span>
+            <span>Đọc trong 3 phút</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>

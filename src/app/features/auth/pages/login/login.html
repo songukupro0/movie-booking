@@ -1,1 +1,26 @@
-<p>login works!</p>
+<section class="auth-page">
+  <div class="auth-card">
+    <h1>Đăng nhập</h1>
+    <p class="subtitle">Đăng nhập để tiếp tục đặt vé và quản lý tài khoản.</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form">
+      <label>
+        <span>Email</span>
+        <input type="email" formControlName="email" placeholder="you@example.com" />
+      </label>
+
+      <label>
+        <span>Mật khẩu</span>
+        <input type="password" formControlName="password" placeholder="••••••••" />
+      </label>
+
+      <p class="error" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+
+      <button type="submit" [disabled]="isSubmitting()">
+        {{ isSubmitting() ? 'Đang đăng nhập...' : 'Đăng nhập' }}
+      </button>
+    </form>
+
+    <p class="switch-link">Chưa có tài khoản? <a routerLink="/auth/register">Đăng ký ngay</a></p>
+  </div>
+</section>

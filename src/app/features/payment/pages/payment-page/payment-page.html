@@ -1,1 +1,34 @@
-<p>payment-page works!</p>
+<div class="payment-page dark-theme-wrapper">
+  <div class="container" *ngIf="!loading && booking; else loadingTpl">
+    <h1>Thanh toán đơn đặt vé</h1>
+    <div class="payment-summary">
+      <p><strong>Mã đặt vé:</strong> {{ booking.bookingCode }}</p>
+      <p><strong>Phim:</strong> {{ typeof booking.movieId === 'string' ? booking.movieId : booking.movieId?.title }}</p>
+      <p><strong>Rạp:</strong> {{ typeof booking.cinemaId === 'string' ? booking.cinemaId : booking.cinemaId?.name }}</p>
+      <p><strong>Phòng:</strong> {{ booking.room?.name }}</p>
+      <p><strong>Ghế:</strong> {{ booking.seats.map(s => s.seatCode).join(', ') }}</p>
+      <p><strong>Tổng tiền:</strong> {{ booking.totalAmount | number:'1.0-0':'vi' }} đ</p>
+      <p><strong>Giữ chỗ đến:</strong> {{ booking.expiresAt | date:'HH:mm dd/MM/yyyy' }}</p>
+    </div>
+
+    <div class="payment-methods">
+      <label><input type="radio" [(ngModel)]="paymentMethod" value="momo"> MoMo</label>
+      <label><input type="radio" [(ngModel)]="paymentMethod" value="zalopay"> ZaloPay</label>
+      <label><input type="radio" [(ngModel)]="paymentMethod" value="atm"> ATM</label>
+      <label><input type="radio" [(ngModel)]="paymentMethod" value="visa"> Visa/Master</label>
+    </div>
+
+    <p *ngIf="errorMessage" style="color:#ff8a8a;">{{ errorMessage }}</p>
+
+    <button class="btn-primary" [disabled]="paying" (click)="confirmPayment()">
+      {{ paying ? 'Đang xác nhận thanh toán...' : 'Xác nhận thanh toán' }}
+    </button>
+  </div>
+
+  <ng-template #loadingTpl>
+    <div class="container">
+      <p *ngIf="loading">Đang tải thông tin thanh toán...</p>
+      <p *ngIf="!loading && errorMessage" style="color:#ff8a8a;">{{ errorMessage }}</p>
+    </div>
+  </ng-template>
+</div>

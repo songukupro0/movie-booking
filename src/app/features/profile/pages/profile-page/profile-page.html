@@ -1,1 +1,30 @@
-<p>profile-page works!</p>
+<section class="profile-page" *ngIf="profile(); else guestTpl">
+  <div class="profile-card">
+    <div class="avatar-wrap">
+      <img [src]="profile()?.avatar" [alt]="profile()?.fullName" class="avatar" />
+    </div>
+    <div class="content">
+      <span class="eyebrow">Tài khoản thành viên</span>
+      <h1>{{ profile()?.fullName }}</h1>
+      <p class="email">{{ profile()?.email }}</p>
+      <p class="phone" *ngIf="profile()?.phone">{{ profile()?.phone }}</p>
+      <div class="meta">
+        <span>Hạng thành viên: {{ profile()?.membershipTier || 'Standard' }}</span>
+        <span>Điểm tích lũy: {{ profile()?.loyaltyPoints || 0 }}</span>
+      </div>
+      <div class="actions">
+        <a routerLink="/profile/booking-history">Xem lịch sử đặt vé</a>
+        <button type="button" (click)="logout()">Đăng xuất</button>
+      </div>
+      <p class="error" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+    </div>
+  </div>
+</section>
+
+<ng-template #guestTpl>
+  <section class="profile-page empty-state">
+    <h1>Chưa đăng nhập</h1>
+    <p>Vui lòng đăng nhập để xem thông tin tài khoản.</p>
+    <a routerLink="/auth/login">Đến trang đăng nhập</a>
+  </section>
+</ng-template>

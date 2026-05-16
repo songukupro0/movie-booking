@@ -1,0 +1,31 @@
+.container {
+  max-width: 760px;
+  margin: 48px auto;
+  padding: 36px;
+  background: linear-gradient(180deg, #1f0a0f, #32111a);
+  border-radius: 24px;
+  color: #fff4f4;
+  border: 1px solid rgba(255, 128, 128, 0.2);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+
+  h1 {
+    color: #ff9b9b;
+    margin-bottom: 18px;
+  }
+
+  p {
+    line-height: 1.7;
+    margin: 10px 0;
+  }
+
+  a {
+    display: inline-block;
+    margin-top: 20px;
+    color: #201111;
+    background: #ffb3b3;
+    padding: 12px 18px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+  }
+}

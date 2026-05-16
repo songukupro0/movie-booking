@@ -1,1 +1,23 @@
-<p>booking-history works!</p>
+<section class="booking-history-page">
+  <h1>Lịch sử đặt vé</h1>
+
+  <p *ngIf="loading()">Đang tải dữ liệu...</p>
+  <p class="error" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+
+  <div class="booking-list" *ngIf="!loading() && bookings().length > 0">
+    <article class="booking-card" *ngFor="let booking of bookings()">
+      <h3>{{ booking.movieId?.title || 'Phim' }}</h3>
+      <p>Rạp: {{ booking.cinemaId?.name || 'Đang cập nhật' }}</p>
+      <p>Suất chiếu: {{ booking.showtimeId?.startTime | date:'HH:mm dd/MM/yyyy' }}</p>
+      <p>Ghế: {{ seatCodes(booking) }}</p>
+      <p>Tổng tiền: {{ booking.totalAmount | number:'1.0-0':'vi' }} đ</p>
+      <p>Trạng thái thanh toán: {{ booking.paymentStatus }}</p>
+      <p>Mã đặt vé: {{ booking.bookingCode }}</p>
+    </article>
+  </div>
+
+  <div *ngIf="!loading() && !errorMessage() && bookings().length === 0" class="empty-state">
+    <p>Bạn chưa có đơn đặt vé nào.</p>
+    <a routerLink="/movies">Đặt vé ngay</a>
+  </div>
+</section>

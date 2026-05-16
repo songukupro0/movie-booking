@@ -1,1 +1,16 @@
-<p>payment-success works!</p>
+<div class="container" *ngIf="booking; else emptyTpl">
+  <h1>Thanh toán thành công</h1>
+  <p><strong>Mã đặt vé:</strong> {{ booking.bookingCode }}</p>
+  <p><strong>Trạng thái:</strong> {{ booking.paymentStatus }}</p>
+  <p><strong>Ghế:</strong> {{ booking.seats.map(s => s.seatCode).join(', ') }}</p>
+  <p><strong>Tổng tiền:</strong> {{ booking.totalAmount | number:'1.0-0':'vi' }} đ</p>
+  <p><strong>Mã quét vé:</strong> {{ booking.ticketBarcode }}</p>
+  <a routerLink="/">Về trang chủ</a>
+</div>
+
+<ng-template #emptyTpl>
+  <div class="container">
+    <p>Không có dữ liệu thanh toán.</p>
+    <a routerLink="/">Về trang chủ</a>
+  </div>
+</ng-template>

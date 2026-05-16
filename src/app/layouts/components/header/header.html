@@ -1,0 +1,88 @@
+<header class="app-header">
+  <div class="header-container">
+    <a routerLink="/" class="logo">
+      <img src="/assets/images/logo.png" alt="Galaxy Movies" class="logo-img" />
+    </a>
+
+    <div class="search-bar">
+      <input type="text" placeholder="Tìm tên phim, rạp..." class="search-input" />
+      <button class="search-btn" type="button">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+    </div>
+
+    <nav class="main-nav">
+      <ul class="nav-list">
+        <li class="nav-dropdown">
+          <a class="nav-link">Thể loại</a>
+          <ul class="dropdown-menu">
+            <li><a routerLink="/category/hanh-dong">Hành động</a></li>
+            <li><a routerLink="/category/tinh-cam">Tình cảm</a></li>
+            <li><a routerLink="/category/hai-huoc">Hài hước</a></li>
+            <li><a routerLink="/category/kinh-di">Kinh dị</a></li>
+            <li><a routerLink="/category/khoa-hoc-vien-tuong">Khoa học viễn tưởng</a></li>
+            <li><a routerLink="/category/hoat-hinh">Hoạt hình</a></li>
+          </ul>
+        </li>
+        <li class="nav-dropdown">
+          <a class="nav-link">Phim ▾</a>
+          <ul class="dropdown-menu">
+            <li><a routerLink="/movies/now-showing">Đang chiếu</a></li>
+            <li><a routerLink="/movies/coming-soon">Sắp chiếu</a></li>
+          </ul>
+        </li>
+        <li><a routerLink="/cinemas" class="nav-link">Rạp</a></li>
+        <li><a routerLink="/promotions" class="nav-link">Khuyến mãi</a></li>
+        <li><a routerLink="/reviews" class="nav-link">Tin tức</a></li>
+      </ul>
+    </nav>
+
+    <div class="user-actions">
+      @if (!authState.currentUser()) {
+        <a routerLink="/auth/login" class="btn-login">Đăng nhập</a>
+        <a routerLink="/auth/register" class="btn-register">Đăng ký</a>
+      }
+
+      @if (authState.currentUser()) {
+        <div class="user-menu" (click)="keepDropdownOpen($event)">
+          <button class="user-avatar-btn" type="button" (click)="toggleDropdown($event)">
+            @if (authState.currentUser()?.avatar) {
+              <img [src]="authState.currentUser()!.avatar" [alt]="authState.currentUser()!.fullName" class="avatar-img" />
+            } @else {
+              <div class="avatar-letter">{{ getAvatarLetter() }}</div>
+            }
+            <span class="user-name">{{ authState.currentUser()?.fullName }}</span>
+            <svg class="chevron" [class.open]="dropdownOpen()" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+
+          <ul class="dropdown-menu user-dropdown" [class.open]="dropdownOpen()">
+            <li class="dropdown-user-info">
+              <div class="dropdown-avatar">
+                @if (authState.currentUser()?.avatar) {
+                  <img [src]="authState.currentUser()!.avatar" [alt]="authState.currentUser()!.fullName" />
+                } @else {
+                  <div class="avatar-letter-lg">{{ getAvatarLetter() }}</div>
+                }
+              </div>
+              <div>
+                <div class="dropdown-name">{{ authState.currentUser()?.fullName }}</div>
+                <div class="dropdown-email">{{ authState.currentUser()?.email }}</div>
+                @if (authState.currentUser()?.loyaltyPoints !== undefined) {
+                  <div class="dropdown-points">⭐ {{ authState.currentUser()?.loyaltyPoints }} điểm</div>
+                }
+              </div>
+            </li>
+            <li class="dropdown-divider"></li>
+            <li><a routerLink="/profile">👤 Trang cá nhân</a></li>
+            <li><a routerLink="/profile/booking-history">🎟️ Vé của tôi</a></li>
+            @if (authState.userRole() === 'admin') {
+              <li><a routerLink="/admin">⚙️ Quản trị</a></li>
+            }
+            <li class="dropdown-divider"></li>
+            <li><button class="btn-logout" type="button" (click)="logout()">🚪 Đăng xuất</button></li>
+          </ul>
+        </div>
+      }
+    </div>
+  </div>
+</header>

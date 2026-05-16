@@ -1,1 +1,137 @@
-<p>movie-detail works!</p>
+<div class="dark-theme-wrapper">
+  <div class="container layout-grid">
+    
+    @if (movie(); as movieData) {
+      <div class="main-content">
+
+         <div class="section-block">
+           <div class="trailer-container">
+             @if (isPlayingTrailer() && safeTrailerUrl()) {
+               <iframe 
+                 [src]="safeTrailerUrl()" 
+                 frameborder="0" 
+                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                 allowfullscreen>
+               </iframe>
+             } @else {
+               <div class="movie-banner" [style.backgroundImage]="'url(' + (movieData.banner || movieData.image) + ')'">
+                 <div class="overlay">
+                   <button class="play-btn" (click)="isPlayingTrailer.set(true)">▶</button>
+                 </div>
+               </div>
+             }
+           </div>
+         </div>
+
+        <div class="movie-info-section">
+          <div class="poster">
+            <img [src]="movieData.image" [alt]="movieData.title">
+          </div>
+          <div class="details">
+            <h1 class="title">
+              {{ movieData.title }} <span class="age-tag">{{ movieData.ageRating }}</span>
+            </h1>
+            <div class="meta-row">
+              <span> {{ movieData.duration }} mins</span>
+              <span> {{ movieData.releaseDate | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="rating-row">
+              <span class="star">⭐ {{ movieData.vote }}</span> <span class="vote-count">({{ movieData.voteCount }} votes)</span>
+            </div>
+            
+            <ul class="info-list">
+              <li><span class="label">Quốc gia:</span> {{ movieData.country }}</li>
+              <li><span class="label">Nhà sản xuất:</span> {{ movieData.studio }}</li>
+              <li>
+                <span class="label">Thể loại:</span> 
+                <div class="genre-badges">
+                  @for (g of movieData.genre; track $index) {
+                    <span class="badge">{{ g.name || g }}</span>
+                  }
+                </div>
+              </li>
+              <li>
+                <span class="label">Đạo diễn:</span> 
+                <span class="badge">{{ movieData.director }}</span>
+              </li>
+              <li>
+                <span class="label">Diễn viên:</span> 
+                <div class="cast-badges">
+                  <span class="badge" *ngFor="let actor of movieData.cast">{{ actor }}</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <h2 class="section-title">Nội Dung Phim</h2>
+          <p class="description-text">{{ movieData.description }}</p>
+        </div>
+
+        <div class="section-block">
+          <h2 class="section-title">Lịch Chiếu</h2>
+          
+          <div class="date-tabs">
+            <button class="date-btn" *ngFor="let date of availableDates(); let i = index"
+              [class.active]="date.value === selectedDate()"
+              (click)="selectDate(date.value)">
+              <span class="day">{{ i === 0 ? 'Hôm Nay' : 'Ngày chiếu' }}</span>
+              <span class="date">{{ date.label }}</span>
+            </button>
+          </div>
+
+          <div class="cinema-list">
+            @if (isLoadingCinemas()) {
+              <div class="loading-state">
+                <p>Đang tải lịch chiếu...</p>
+              </div>
+            } @else {
+              @if (cinemas().length === 0) {
+                <div class="empty-state" style="padding: 20px; color: #a4a4a4;">
+                  Hiện không có suất chiếu nào vào ngày này. Vui lòng chọn ngày khác.
+                </div>
+              } @else {
+                <div class="cinema-card" *ngFor="let cinema of cinemas()">
+                  <h3 class="cinema-name">{{ cinema.name }}</h3>
+                  <div class="showtime-format" *ngFor="let show of cinema.showtimes">
+                    <span class="format-label">{{ show.format }}</span>
+                    <div class="time-buttons">
+                      <button class="time-btn" *ngFor="let st of show.times"
+                        [routerLink]="['/booking/seat-selection']"
+                        [queryParams]="{ movieId: movieData._id, cinemaId: cinema.id, date: selectedDate(), time: st.time, showtimeId: st.id }">
+                        {{ st.time }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div class="main-content">
+        <p>Đang tải thông tin phim...</p>
+      </div>
+    }
+
+    <aside class="sidebar">
+      <h2 class="section-title">PHIM ĐANG CHIẾU</h2>
+      <div class="sidebar-movie-list">
+        <div class="side-movie-card" *ngFor="let sm of sidebarMovies()" [routerLink]="['/movies', sm.slug]">
+          <img [src]="sm.image" [alt]="sm.title">
+          <div class="card-overlay">
+            <h4 class="sm-title">{{ sm.title }}</h4>
+            <div class="sm-meta">
+              <span class="sm-age">{{ sm.age }}</span>
+              <span class="sm-rating">⭐ {{ sm.vote }}</span>
+            </div>
+          </div>
+        </div>
+        <button class="view-more-btn">Xem thêm ❯</button>
+      </div>
+    </aside>
+
+  </div>
+</div>

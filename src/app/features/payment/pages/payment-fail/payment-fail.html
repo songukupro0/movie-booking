@@ -1,1 +1,6 @@
-<p>payment-fail works!</p>
+<div class="container">
+  <h1>Thanh toán thất bại</h1>
+  <p>{{ message }}</p>
+  <p *ngIf="bookingId"><strong>Mã đơn:</strong> {{ bookingId }}</p>
+  <a routerLink="/payment" [state]="{ bookingId: bookingId }">Thử lại</a>
+</div>

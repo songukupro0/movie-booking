@@ -1,0 +1,353 @@
+// ================================
+// Movie Booking Footer Styles
+// ================================
+
+$footer-bg: #0d0d14;
+$footer-main-bg: #13131f;
+$footer-border: rgba(255, 255, 255, 0.07);
+$primary: #e50914;
+$primary-hover: #ff1f2e;
+$text-muted: #8a8a9a;
+$text-light: #c8c8d8;
+$white: #ffffff;
+
+.site-footer {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background-color: $footer-bg;
+  color: $text-light;
+  margin-top: auto;
+}
+
+// ── Container ──────────────────────────────────────────────
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+// ── Main Section ───────────────────────────────────────────
+.footer-main {
+  background-color: $footer-main-bg;
+  padding: 56px 0 40px;
+  border-bottom: 1px solid $footer-border;
+
+  .footer-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+    gap: 40px;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+  }
+}
+
+// ── Brand Column ───────────────────────────────────────────
+.footer-brand {
+  .brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+
+    .logo-icon {
+      font-size: 28px;
+      filter: drop-shadow(0 0 8px rgba($primary, 0.6));
+    }
+
+    .logo-text {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      background: linear-gradient(142deg, #914b4b 30%, #e50914 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+
+  .brand-desc {
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: $text-muted;
+    margin: 0 0 24px;
+    max-width: 300px;
+  }
+}
+
+// ── Social Links ───────────────────────────────────────────
+.social-links {
+  display: flex;
+  gap: 10px;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid $footer-border;
+  color: $text-muted;
+  text-decoration: none;
+  transition: all 0.25s ease;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    transform: translateY(-3px);
+    border-color: transparent;
+  }
+
+  &.facebook:hover {
+    background: #1877f2;
+    color: $white;
+    box-shadow: 0 6px 20px rgba(24, 119, 242, 0.4);
+  }
+
+  &.youtube:hover {
+    background: #ff0000;
+    color: $white;
+    box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
+  }
+
+  &.instagram:hover {
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    color: $white;
+    box-shadow: 0 6px 20px rgba(220, 39, 67, 0.4);
+  }
+
+  &.tiktok:hover {
+    background: #010101;
+    color: $white;
+    box-shadow: 0 6px 20px rgba(1, 1, 1, 0.5);
+  }
+}
+
+// ── Column Titles ──────────────────────────────────────────
+.col-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: $white;
+  margin: 0 0 18px;
+  position: relative;
+  padding-bottom: 10px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 28px;
+    height: 2px;
+    background: $primary;
+    border-radius: 2px;
+  }
+}
+
+// ── Footer Links ───────────────────────────────────────────
+.footer-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  li a {
+    font-size: 14px;
+    color: $text-muted;
+    text-decoration: none;
+    transition: color 0.2s ease, padding-left 0.2s ease;
+    display: inline-block;
+
+    &:hover {
+      color: $white;
+      padding-left: 6px;
+    }
+  }
+}
+
+// ── Contact List ───────────────────────────────────────────
+.contact-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13.5px;
+    color: $text-muted;
+    line-height: 1.5;
+  }
+
+  .contact-icon {
+    font-size: 15px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+}
+
+// ── App Badges ─────────────────────────────────────────────
+.app-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.app-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid $footer-border;
+  text-decoration: none;
+  color: $white;
+  transition: all 0.25s ease;
+  width: fit-content;
+
+  &:hover {
+    background: rgba($primary, 0.12);
+    border-color: rgba($primary, 0.4);
+    transform: translateX(4px);
+  }
+
+  .badge-icon {
+    font-size: 20px;
+  }
+
+  .badge-text {
+    display: flex;
+    flex-direction: column;
+
+    small {
+      font-size: 10px;
+      color: $text-muted;
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+
+    strong {
+      font-size: 13px;
+      font-weight: 700;
+      color: $white;
+    }
+  }
+}
+
+// ── Payment Methods ────────────────────────────────────────
+.footer-payments {
+  background-color: rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid $footer-border;
+  padding: 16px 0;
+
+  .footer-container {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .payment-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: $text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    white-space: nowrap;
+  }
+
+  .payment-methods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .payment-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid $footer-border;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: $text-light;
+    transition: all 0.2s ease;
+    cursor: default;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.15);
+      color: $white;
+    }
+  }
+}
+
+// ── Bottom Bar ─────────────────────────────────────────────
+.footer-bottom {
+  padding: 18px 0;
+
+  .footer-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .copyright {
+    font-size: 13px;
+    color: $text-muted;
+    margin: 0;
+
+    strong {
+      color: $primary;
+      font-weight: 700;
+    }
+  }
+
+  .bottom-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    a {
+      font-size: 12px;
+      color: $text-muted;
+      text-decoration: none;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: $white;
+      }
+    }
+
+    .divider {
+      color: rgba(255, 255, 255, 0.15);
+      font-size: 12px;
+    }
+  }
+}

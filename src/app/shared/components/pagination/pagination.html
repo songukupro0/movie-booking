@@ -1,1 +1,30 @@
-<p>pagination works!</p>
+<nav class="pagination" *ngIf="totalPages() > 1">
+  <!-- Prev -->
+  <button class="pg-btn pg-arrow"
+          [disabled]="currentPage() === 1"
+          (click)="prev()"
+          aria-label="Trang trước">
+    ‹
+  </button>
+
+  <!-- Page numbers -->
+  <ng-container *ngFor="let p of pages()">
+    <button *ngIf="p !== '...'; else dots"
+            class="pg-btn pg-num"
+            [class.active]="p === currentPage()"
+            (click)="goTo(p)">
+      {{ p }}
+    </button>
+    <ng-template #dots>
+      <span class="pg-dots">…</span>
+    </ng-template>
+  </ng-container>
+
+  <!-- Next -->
+  <button class="pg-btn pg-arrow"
+          [disabled]="currentPage() === totalPages()"
+          (click)="next()"
+          aria-label="Trang sau">
+    ›
+  </button>
+</nav>

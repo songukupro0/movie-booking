@@ -1,0 +1,70 @@
+<div class="movie-page">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <h1 class="page-title">Phim Dành Cho Bạn Tới Đây</h1>
+      <p class="page-subtitle">Đón chờ những siêu phẩm sắp ra rạp</p>
+
+      <!-- Router Tabs -->
+      <div class="movie-tabs">
+        <a routerLink="/movies/now-showing" routerLinkActive="active" class="tab-pill">Đang Chiếu</a>
+        <a routerLink="/movies/coming-soon" routerLinkActive="active" class="tab-pill">Sắp Chiếu</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Movie Grid Section -->
+  <section class="movie-section">
+    <div class="container">
+
+      <!-- Loading Skeleton -->
+      <div class="movie-grid" *ngIf="isLoading()">
+        <div class="movie-card skeleton" *ngFor="let i of [1,2,3,4,5,6,7,8]">
+          <div class="card-image-wrapper skeleton-img"></div>
+          <div class="card-content">
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line short"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Movie Grid -->
+      <div class="movie-grid" *ngIf="!isLoading()">
+        <article class="movie-card" *ngFor="let movie of movies()" [routerLink]="['/movies', movie.slug]">
+          <div class="card-image-wrapper">
+            <img [src]="movie.image" [alt]="movie.title" class="card-image">
+            <div class="badges">
+              <span class="badge status status-coming">SẮP CHIẾU</span>
+              <span class="badge age" *ngIf="movie.ageRating">{{ movie.ageRating }}</span>
+            </div>
+            <div class="card-overlay">
+              <button class="btn-book">Xem Chi Tiết</button>
+            </div>
+          </div>
+          <div class="card-content">
+            <h3 class="movie-title">{{ movie.title }}</h3>
+            <div class="movie-meta">
+              <span class="genre">{{ movie.genre?.name || 'Hành động' }}</span>
+              <div class="release-date" *ngIf="movie.releaseDate">
+                Khởi chiếu: {{ movie.releaseDate | date:'dd/MM/yyyy' }}
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="!isLoading() && movies().length === 0">
+        <p>Không có phim sắp chiếu.</p>
+      </div>
+
+      <!-- Pagination -->
+      <app-pagination
+        [currentPage]="currentPage()"
+        [totalPages]="totalPages()"
+        (pageChange)="onPageChange($event)">
+      </app-pagination>
+
+    </div>
+  </section>
+</div>

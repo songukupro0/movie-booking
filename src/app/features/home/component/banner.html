@@ -1,47 +1,85 @@
-<!-- c:\laragon\www\movie-booking\src\app\features\home\components\home-banner\home-banner.html -->
 <div class="banner-slider">
-  <div class="slider-wrapper">
-    
-    <div 
-      class="slide-item" 
+
+  <!-- Loading skeleton -->
+  <div class="banner-skeleton" *ngIf="isLoading">
+    <div class="skeleton-shimmer"></div>
+  </div>
+
+  <!-- Slider -->
+  <div class="slider-wrapper" *ngIf="!isLoading">
+    <div
+      class="slide-item"
       *ngFor="let slide of slides; let i = index"
       [class.active]="i === currentSlide"
     >
-      <!-- Lớp nền Parallax riêng biệt -->
+      <!-- Background parallax -->
       <div class="slide-bg"
-           [style.backgroundImage]="'url(' + slide.image + ')'"
-           [style.transform]="'translate3d(0, ' + (scrollY * 0.5) + 'px, 0)'">
+           [style.backgroundImage]="'url(' + (slide.banner || slide.image) + ')'"
+           [style.transform]="'translate3d(0, ' + (scrollY * 0.3) + 'px, 0)'">
       </div>
 
+      <!-- Gradient overlay -->
       <div class="overlay-gradient"></div>
-      
+
+      <!-- Content -->
       <div class="container slide-content">
-        <span class="badge">{{ slide.genre }}</span>
-        <h2 class="movie-title">{{ slide.title }}</h2>
-        <div class="meta-info">
-          <span class="rating">⭐ {{ slide.rating }}</span>
-          <span class="duration">2h 15m</span>
-        </div>
-        <p class="description">{{ slide.description }}</p>
-        
-        <div class="actions">
-          <a routerLink="/booking" class="btn-primary">Đặt Vé Ngay</a>
-          <button class="btn-outline">Xem Trailer</button>
+        <div class="slide-inner">
+          <div class="badge-row">
+            <!-- hiện tên thể loại -->
+            <span class="badge-genre">{{ slide.genre.name }}</span>
+            <span class="badge-age" *ngIf="slide.ageRating">{{ slide.ageRating }}</span>
+          </div>
+
+          <h1 class="movie-title">{{ slide.title }}</h1>
+
+          <div class="meta-info">
+            <span class="rating" *ngIf="slide.vote">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFD700"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              {{ slide.vote }}/10
+            </span>
+            <span class="divider" *ngIf="slide.vote && slide.duration">•</span>
+            <span class="duration" *ngIf="slide.duration">{{ formatDuration(slide.duration) }}</span>
+          </div>
+
+          <p class="description">{{ slide.description }}</p>
+
+          <div class="actions">
+            <a routerLink="/booking" class="btn-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20 12a8 8 0 1 0-16 0 8 8 0 0 0 16 0zm2 0A10 10 0 1 1 2 12a10 10 0 0 1 20 0zm-10.5 3.5L16 12l-4.5-3.5v7z"/></svg>
+              Đặt Vé Ngay
+            </a>
+            <a [href]="slide.trailer" target="_blank" class="btn-trailer" *ngIf="slide.trailer">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Xem Trailer
+            </a>
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- Prev / Next arrows -->
+    <button class="arrow-btn arrow-prev" (click)="prevSlide()" *ngIf="slides.length > 1">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <button class="arrow-btn arrow-next" (click)="nextSlide()" *ngIf="slides.length > 1">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
   </div>
 
-  <div class="dots-nav">
-    <span 
-      *ngFor="let slide of slides; let i = index" 
+  <!-- Slide number indicator -->
+  <div class="slide-counter" *ngIf="!isLoading && slides.length > 1">
+    <span class="current">{{ currentSlide + 1 }}</span>
+    <span class="sep">/</span>
+    <span class="total">{{ slides.length }}</span>
+  </div>
+
+  <!-- Dot navigation -->
+  <div class="dots-nav" *ngIf="!isLoading && slides.length > 1">
+    <span
+      *ngFor="let slide of slides; let i = index"
       [class.active]="i === currentSlide"
       (click)="goToSlide(i)">
     </span>
   </div>
+
 </div>
-
-
-
-

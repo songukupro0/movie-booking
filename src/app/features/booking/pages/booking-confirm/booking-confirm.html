@@ -1,1 +1,57 @@
-<p>booking-confirm works!</p>
+<div class="booking-confirm-page dark-theme">
+  <div class="container">
+    <div class="split-layout">
+      <div class="ticket-summary-col">
+        <h2 class="col-title">TÓM TẮT VÉ</h2>
+        <div class="ticket-card" *ngIf="movieInfo">
+          <div class="t-movie-title">{{ movieInfo.title }}</div>
+          <div class="t-details">
+            <p><strong>Rạp:</strong> {{ movieInfo.cinema }}</p>
+            <p><strong>Phòng:</strong> {{ movieInfo.room }}</p>
+            <p><strong>Suất chiếu:</strong> {{ movieInfo.showtime }}</p>
+          </div>
+          <div class="t-seats">
+            <p><strong>Ghế đã chọn:</strong></p>
+            <div class="seat-badges">
+              <span class="badge" *ngFor="let s of selectedSeats">{{ s }}</span>
+            </div>
+          </div>
+          <div class="t-divider"></div>
+          <div class="t-total">
+            <span>TỔNG TIỀN</span>
+            <span class="price-highlight">{{ totalPrice | number:'1.0-0':'vi' }} đ</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="payment-method-col">
+        <h2 class="col-title">GIỮ CHỖ & CHUYỂN SANG THANH TOÁN</h2>
+        <div class="payment-options">
+          <label class="pay-option" [class.selected]="selectedPayment === 'momo'">
+            <input type="radio" name="payment" value="momo" [(ngModel)]="selectedPayment">
+            <span>Ví MoMo</span>
+          </label>
+          <label class="pay-option" [class.selected]="selectedPayment === 'zalopay'">
+            <input type="radio" name="payment" value="zalopay" [(ngModel)]="selectedPayment">
+            <span>ZaloPay</span>
+          </label>
+          <label class="pay-option" [class.selected]="selectedPayment === 'atm'">
+            <input type="radio" name="payment" value="atm" [(ngModel)]="selectedPayment">
+            <span>ATM / Internet Banking</span>
+          </label>
+          <label class="pay-option" [class.selected]="selectedPayment === 'visa'">
+            <input type="radio" name="payment" value="visa" [(ngModel)]="selectedPayment">
+            <span>Thẻ quốc tế (Visa / Master)</span>
+          </label>
+        </div>
+
+        <p *ngIf="errorMessage" style="color:#ff8a8a; margin-top: 12px;">{{ errorMessage }}</p>
+
+        <button class="btn-primary btn-pay mt-4" [disabled]="isProcessing" (click)="confirmPayment()">
+          <span *ngIf="!isProcessing">TIẾP TỤC ĐẾN BƯỚC THANH TOÁN</span>
+          <span *ngIf="isProcessing" class="spinner">Đang giữ chỗ...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

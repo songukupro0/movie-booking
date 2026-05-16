@@ -1,1 +1,48 @@
-<p>cinema-detail works!</p>
+<div class="cinema-detail-page container">
+  <!-- Thông tin rạp chiếu -->
+  <div class="cinema-header">
+    <div class="cinema-info">
+      <h1 class="cinema-name">{{ cinema().name }}</h1>
+      <p class="cinema-address">Địa chỉ: {{ cinema().address }}</p>
+      <p class="cinema-hotline">Hotline: {{ cinema().hotline }}</p>
+    </div>
+  </div>
+
+  <div class="booking-section">
+    <!-- Chọn ngày -->
+    <div class="date-selector">
+      <button 
+        *ngFor="let date of nextDays" 
+        class="date-btn" 
+        [class.active]="date.getDate() === selectedDate().getDate()"
+        (click)="selectDate(date)">
+        <span class="day">{{ date | date:'EEE' }}</span>
+        <span class="date">{{ date | date:'dd/MM' }}</span>
+      </button>
+    </div>
+
+    <!-- Danh sách phim và suất chiếu -->
+    <div class="movies-list">
+      <div class="movie-item" *ngFor="let movie of movies()">
+        <div class="movie-img" [routerLink]="['/movies', movie.id]" style="cursor: pointer;" title="Xem chi tiết phim">
+          <img [src]="movie.image" [alt]="movie.title">
+        </div>
+        <div class="movie-info">
+          <h3 class="movie-title" [routerLink]="['/movies', movie.id]" style="cursor: pointer;">{{ movie.title }}</h3>
+          <p class="movie-genre">{{ movie.genre }}</p>
+          <div class="showtimes">
+            <h4>Lịch chiếu:</h4>
+            <div class="time-list">
+              <button class="time-btn" *ngFor="let show of movie.showtimes" 
+                [routerLink]="['/booking']"
+                [queryParams]="{ movieId: movie.id, cinemaId: cinema().id, date: selectedDate() | date:'yyyy-MM-dd', time: show.time, room: show.room }"
+              >
+                {{ show.time }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

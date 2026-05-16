@@ -1,1 +1,54 @@
-<p>showtime-list works!</p>
+<!-- d:\angular\movie-booking\src\app\features\showtimes\showtimes.html -->
+<div class="showtimes-page">
+  <div class="container">
+    <div class="page-header text-center">
+      <h1 class="page-title">Lịch Chiếu Phim</h1>
+      <p class="page-subtitle">Cập nhật lịch chiếu mới nhất tại các rạp Galaxy</p>
+    </div>
+
+    <!-- Thanh chọn ngày -->
+    <div class="date-tabs-wrapper">
+      <div class="date-tabs">
+        <div class="date-item" 
+             *ngFor="let date of dates" 
+             [class.active]="selectedDate === date"
+             (click)="selectDate(date)">
+          <span class="day-name">{{ date.dayName }}</span>
+          <span class="day-number">{{ date.dayNumber }}/{{ date.month }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Danh sách Rạp & Phim -->
+    <div class="cinema-list">
+      <div class="cinema-card" *ngFor="let cinema of cinemas">
+        <div class="cinema-header">
+          <h2 class="cinema-name">{{ cinema.name }}</h2>
+          <p class="cinema-address">{{ cinema.address }}</p>
+        </div>
+        
+        <div class="cinema-body">
+          <!-- Item Phim -->
+          <div class="movie-row" *ngFor="let movie of cinema.movies">
+            <div class="movie-poster">
+              <img [src]="movie.poster" [alt]="movie.title">
+            </div>
+            <div class="movie-info">
+              <div class="movie-head">
+                <h3 class="movie-title">{{ movie.title }}</h3>
+                <span class="rating-badge">{{ movie.rating }}</span>
+              </div>
+              <p class="movie-format">{{ movie.format }}</p>
+              
+              <div class="time-slots">
+                <button class="btn-time" *ngFor="let time of movie.times">
+                  {{ time }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

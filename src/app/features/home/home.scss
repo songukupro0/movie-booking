@@ -1,321 +1,795 @@
-// Variables (Theo phong cách Galaxy Cine)
-$primary-color: #f26b38; // Cam Galaxy
-$primary-hover: #d85728;
-$text-dark: #333333;
-$text-light: #777777;
-$bg-light: #f9f9f9;
-$white: #ffffff;
-$border-radius: 8px;
-$transition: all 0.3s ease;
+:root {
+  /* Variables for Light Mode */
+  --bg-primary: #f5f5f5;
+  --bg-secondary: #ffffff;
+  --bg-dropdown: #e0e0e0;
+  --text-main: #333333;
+  --text-muted: #666666;
+  --text-inverse: #ffffff; /* always white inside buttons/banners */
+  --border-color: #dddddd;
+  --blue-accent: #034ea2;
+  --orange-primary: #f26b38;
+  --orange-hover: #d95525;
+  --quick-btn: #f26b38;
+  --overlay-bg: rgba(255, 255, 255, 0.85);
+  --trailer-btn-bg: rgba(0,0,0,0.5);
+  --trailer-btn-border: #333;
+}
 
-// Base styles & Container
-.container {
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Variables for Dark Mode */
+    --bg-primary: #0f0f0f;
+    --bg-secondary: #1a1a1a;
+    --bg-dropdown: #2a2a2a;
+    --text-main: #ffffff;
+    --text-muted: #999999;
+    --text-inverse: #ffffff;
+    --border-color: #f9f8f8;
+    --blue-accent: #034ea2;
+    --orange-primary: #f26b38;
+    --orange-hover: #d95525;
+    --quick-btn: #c35c24;
+    --overlay-bg: rgba(0, 0, 0, 0.6);
+    --trailer-btn-bg: transparent;
+    --trailer-btn-border: #fff;
+  }
+}
+
+/* Theme Base */
+.home-page-dark {
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  min-height: 100vh;
+  font-family: 'SF Pro Display', 'Roboto', sans-serif;
+  padding-bottom: 50px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.dark-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 15px;
 }
 
-.home-page {
-  font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
-  color: $text-dark;
-  background-color: $white;
+// ══ QUICK BOOKING BAR ════════════════════════════════════════════
+.quick-booking-wrapper {
+  background: #111827;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 14px 24px;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 100;
 }
 
-// Typography
-.section-title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  margin-bottom: 20px;
-  border-left: 4px solid $primary-color;
-  padding-left: 10px;
-  
-  &.text-center {
-    text-align: center;
-    border-left: none;
-    padding-left: 0;
-  }
-}
-
-// Buttons
-.btn-primary {
-  background-color: $primary-color;
-  color: $white;
-  padding: 12px 24px;
-  border: none;
-  border-radius: $border-radius;
-  font-weight: 600;
-  cursor: pointer;
-  transition: $transition;
-  &:hover {
-    background-color: $primary-hover;
-    transform: translateY(-2px);
-  }
-}
-
-.btn-outline {
-  background-color: transparent;
-  color: $white;
-  padding: 12px 24px;
-  border: 2px solid $white;
-  border-radius: $border-radius;
-  font-weight: 600;
-  cursor: pointer;
-  transition: $transition;
-  &:hover {
-    background-color: $white;
-    color: $text-dark;
-  }
-}
-
-// 1. Hero Banner
-.hero-banner {
-  height: 500px;
-  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://cdn.galaxycine.vn/media/2026/2/24/hoppers-2048_1771926474855.jpg') center/cover;
+.quick-booking-bar {
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: $white;
-  margin-bottom: 40px;
-
-  .banner-content {
-    max-width: 600px;
-    h1 { font-size: 3rem; margin-bottom: 15px; text-transform: uppercase; }
-    p { font-size: 1.2rem; margin-bottom: 25px; line-height: 1.5; }
-  }
+  gap: 0;
+  max-width: 1200px;
+  width: 100%;
+  background: #1f2937;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+  overflow: visible;
+  padding: 0;
 }
 
-// 2. Categories
-.category-section {
-  margin-bottom: 50px;
-  .category-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 15px;
+// Separator "›"
+.qb-sep {
+  color: rgba(255,255,255,0.2);
+  font-size: 18px;
+  flex-shrink: 0;
+  padding: 0 2px;
+  user-select: none;
+}
+
+// Each dropdown wrapper
+.qb-dropdown {
+  flex: 1;
+  position: relative;
+  min-width: 0;
+
+  // when disabled (previous step not selected)
+  &.disabled .qb-trigger {
+    opacity: 0.4;
+    cursor: not-allowed;
   }
-  .category-item {
-    background-color: $bg-light;
-    padding: 20px;
-    text-align: center;
-    border-radius: $border-radius;
-    font-weight: 600;
+
+  // Trigger button
+  .qb-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
     cursor: pointer;
-    transition: $transition;
-    border: 1px solid #eee;
+    border-radius: 10px;
+    transition: background 0.2s;
+    min-height: 60px;
+
     &:hover {
-      background-color: $primary-color;
-      color: $white;
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba($primary-color, 0.3);
+      background: rgba(255,255,255,0.05);
     }
   }
-}
 
-// 3 & 5. Movie Sections (Featured / Best Seller)
-.movie-section {
-  margin-bottom: 60px;
-  
-  .section-header {
+  // Number badge
+  .qb-number {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    background: #f26b38;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  // Text block: label + value stacked
+  .qb-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .qb-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .qb-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // Arrow icon
+  .qb-arrow {
+    flex-shrink: 0;
+    color: rgba(255,255,255,0.4);
+    transition: transform 0.25s ease;
+    &.open { transform: rotate(180deg); }
+  }
+
+  // ──── Dropdown menu ─────────────────────────────────────────
+  .qb-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    min-width: 260px;
+    max-width: 340px;
+    background: #1f2937;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    z-index: 200;
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 6px;
+
+    &::-webkit-scrollbar { width: 4px; }
+    &::-webkit-scrollbar-track { background: transparent; }
+    &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+  }
+
+  // Movie item (with thumbnail)
+  .qb-movie-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover { background: rgba(255,255,255,0.07); }
+    &.active { background: rgba(242,107,56,0.15); }
+
+    img {
+      width: 40px;
+      height: 56px;
+      object-fit: cover;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .qb-movie-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .qb-movie-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      line-clamp: 2;
+      -webkit-line-clamp: 2;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .qb-movie-age {
+      font-size: 10px;
+      font-weight: 700;
+      color: #f26b38;
+      background: rgba(242,107,56,0.15);
+      padding: 2px 6px;
+      border-radius: 3px;
+      width: fit-content;
+    }
+  }
+
+  // Generic item (cinema, date, showtime)
+  .qb-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background 0.15s;
+    &:hover { background: rgba(255,255,255,0.07); }
+    &.active { background: rgba(242,107,56,0.15); }
+  }
+
+  // Cinema info
+  .qb-cinema-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    .qb-cinema-name { font-size: 13px; font-weight: 600; color: #fff; }
+    .qb-cinema-addr { font-size: 11px; color: rgba(255,255,255,0.45); }
+  }
+
+  // Date grid
+  .qb-dates-menu {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    min-width: 280px;
+    padding: 10px;
+  }
+  .qb-date-item {
+    padding: 8px 6px;
+    border-radius: 7px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.7);
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: all 0.15s;
+    &:hover { background: rgba(255,255,255,0.07); color: #fff; }
+    &.selected { background: #f26b38; color: #fff; border-color: #f26b38; }
+  }
+
+  // Showtime chips
+  .qb-showtime-menu {
+    min-width: 220px;
+    padding: 10px;
+  }
+  .qb-st-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    padding: 9px 12px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 5px;
+    &:hover { background: rgba(255,255,255,0.07); }
+    &.selected { background: rgba(242,107,56,0.15); border-color: #f26b38; }
+    .qb-st-time { font-size: 15px; font-weight: 700; color: #fff; }
+    .qb-st-price { font-size: 12px; color: rgba(255,255,255,0.5); }
+  }
 
-    .view-all {
-      color: $primary-color;
-      text-decoration: none;
-      font-weight: 600;
-      &:hover { text-decoration: underline; }
+  // Empty state
+  .qb-empty {
+    padding: 16px;
+    text-align: center;
+    color: rgba(255,255,255,0.3);
+    font-size: 13px;
+  }
+}
+
+// Buy ticket button
+.btn-mua-ve-nhanh {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f26b38;
+  color: #fff;
+  border: none;
+  padding: 0 28px;
+  height: 60px;
+  border-radius: 0 10px 10px 0;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: background 0.2s, opacity 0.2s;
+  white-space: nowrap;
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  &.ready {
+    background: #e85a25;
+    &:hover { background: #d04e1e; }
+  }
+}
+
+
+/* Section Headers */
+.section-header-tabs {
+  display: flex;
+  align-items: center;
+  margin: 40px 0 20px;
+
+  .section-title-blue {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+
+    .line-blue {
+      color: var(--blue-accent);
+      font-weight: 900;
+      margin-right: 10px;
+      font-size: 24px;
     }
   }
 
-  .movie-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 25px;
-  }
+  .tabs {
+    margin-left: 30px;
+    display: flex;
+    gap: 20px;
 
-  .movie-card {
-    background: $white;
-    border-radius: $border-radius;
+    button {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 16px;
+      cursor: pointer;
+      padding-bottom: 5px;
+      position: relative;
+      font-weight: 500;
+      transition: color 0.3s;
+
+      &.active, &:hover {
+        color: var(--text-main);
+      }
+
+      &.active::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--blue-accent);
+      }
+    }
+  }
+}
+
+/* Movie Grid */
+.movie-grid-galaxy {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+
+  .movie-card-galaxy {
+    background: transparent;
+    border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    transition: $transition;
-
-    &:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-
-      .card-image img { transform: scale(1.05); }
-      .card-overlay { opacity: 1; }
-    }
 
     .card-image {
       position: relative;
+      border-radius: 8px;
       overflow: hidden;
-      aspect-ratio: 2/3;
-
+      aspect-ratio: 2 / 3;
+      
       img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: $transition;
-      }
-
-      .rating {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: rgba(0,0,0,0.7);
-        color: #ffc107;
-        padding: 5px 10px;
-        border-radius: 20px;
-        font-size: 0.9rem;
-        font-weight: 600;
+        transition: transform 0.3s ease;
       }
 
       .card-overlay {
         position: absolute;
         top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.6);
+        background: var(--overlay-bg);
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
+        gap: 15px;
         opacity: 0;
-        transition: $transition;
+        transition: opacity 0.3s ease;
+        z-index: 2;
 
-        .btn-book {
-          background-color: $primary-color;
-          color: $white;
+        .btn-buy-ticket {
+          background: var(--orange-primary);
+          color: var(--text-inverse);
           border: none;
-          padding: 10px 20px;
-          border-radius: 25px;
-          font-weight: bold;
+          padding: 10px 25px;
+          border-radius: 4px;
           cursor: pointer;
-          transform: translateY(20px);
-          transition: transform 0.3s ease;
+          font-weight: bold;
+          text-transform: uppercase;
+          width: 70%;
+          &:hover { background: var(--orange-hover); }
+        }
+
+        .btn-trailer {
+          background: var(--trailer-btn-bg);
+          color: var(--text-inverse);
+          border: 1px solid var(--trailer-btn-border);
+          padding: 10px 25px;
+          border-radius: 4px;
+          cursor: pointer;
+          font-weight: bold;
+          text-transform: uppercase;
+          width: 70%;
+          &:hover { opacity: 0.8; }
+        }
+      }
+
+      &:hover {
+        img { transform: scale(1.05); }
+        .card-overlay { opacity: 1; }
+      }
+
+      .age-rating {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background: var(--orange-primary);
+        color: var(--text-inverse);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: bold;
+        z-index: 3;
+      }
+
+      .star-rating {
+        position: absolute;
+        bottom: 10px;
+        right: 50px;
+        color: var(--text-inverse);
+        font-size: 14px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        z-index: 3;
+        
+        &::before {
+          content: '★';
+          color: #f5c518;
         }
       }
     }
 
-    &:hover .card-overlay .btn-book {
-      transform: translateY(0);
-    }
-
     .card-content {
-      padding: 15px;
-      text-align: center;
+      padding: 15px 0;
       .movie-title {
-        font-size: 1.1rem;
-        margin-bottom: 5px;
-        font-weight: 700;
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--text-main);
+        margin: 0;
+        text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .movie-genre {
-        font-size: 0.9rem;
-        color: $text-light;
+        &:hover { color: var(--orange-primary); cursor: pointer; }
       }
     }
   }
 }
 
-// 4. Middle Promotion Banner
-.mid-banner {
-  background: linear-gradient(135deg, $primary-color, #ff9b71);
-  border-radius: $border-radius;
-  padding: 50px 20px;
-  text-align: center;
-  color: $white;
-  margin-bottom: 60px;
+/* GÓC ĐIỆN ẢNH Section */
+.blog-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 
-  h2 { font-size: 2.5rem; margin-bottom: 10px; }
-  p { font-size: 1.1rem; margin-bottom: 20px; }
-}
-
-// 6. Customer Reviews
-.review-section {
-  margin-bottom: 60px;
-  padding: 40px 0;
-  background-color: $bg-light;
-  
-  .review-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    padding: 0 15px;
+  .featured-blog {
+    border-radius: 8px;
+    overflow: hidden;
+    height: 100%;
+    position: relative;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    cursor: pointer;
+    
+    .overlay-title {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+      font-size: 18px;
+    }
   }
 
-  .review-card {
-    background: $white;
-    padding: 25px;
-    border-radius: $border-radius;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-    
-    .review-text {
-      font-style: italic;
-      color: $text-light;
-      margin-bottom: 20px;
-      line-height: 1.6;
-    }
-    
-    .reviewer {
+  .side-blogs {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    .side-blog-item {
       display: flex;
-      align-items: center;
       gap: 15px;
-      
-      .avatar {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
+      cursor: pointer;
+
+      img {
+        width: 140px;
+        height: 90px;
         object-fit: cover;
+        border-radius: 6px;
       }
-      .name { font-weight: 600; color: $text-dark; }
+
+      .blog-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        .blog-title {
+          font-size: 16px;
+          margin: 0 0 10px 0;
+          color: var(--text-main);
+          font-weight: 500;
+          line-height: 1.4;
+          display: -webkit-box;
+          line-clamp: 2;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          transition: color 0.2s;
+        }
+
+        &:hover .blog-title {
+          color: var(--blue-accent);
+        }
+
+        .blog-meta {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+
+          .btn-like {
+            background: #1877f2;
+            color: #fff;
+            border: none;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            &::before { content: '👍'; font-size: 10px; }
+          }
+
+          .views {
+            color: var(--text-muted);
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            &::before { content: '👁'; font-size: 12px; }
+          }
+        }
+      }
     }
   }
 }
 
-// 7. Newsletter
-.newsletter-section {
-  margin-bottom: 60px;
-  
-  .newsletter-box {
-    background-color: #111;
-    color: $white;
-    padding: 50px 20px;
-    text-align: center;
-    border-radius: $border-radius;
+/* TIN KHUYẾN MÃI Section */
+.promo-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
 
-    h2 { font-size: 2rem; margin-bottom: 10px; }
-    p { margin-bottom: 25px; color: #ccc; }
+  .promo-card {
+    cursor: pointer;
+    img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      border-radius: 6px;
+      transition: transform 0.3s;
+    }
+    
+    .promo-title {
+      font-size: 15px;
+      color: var(--text-main);
+      margin-top: 10px;
+      line-height: 1.4;
+      text-align: center;
+      transition: color 0.2s;
+    }
 
-    .newsletter-form {
+    &:hover {
+      img { transform: scale(1.03); }
+      .promo-title { color: var(--orange-primary); }
+    }
+  }
+}
+
+// ══ HOME MAIN LAYOUT: 2 cột (phim + sidebar) ══════════════════
+.home-main-layout {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 32px;
+  align-items: start;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+// ══ TRENDING WIDGET SIDEBAR ════════════════════════════════════
+.trending-widget {
+  position: sticky;
+  top: 80px; // dính theo khi cuộn (nếu navbar cố định)
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(242, 107, 56, 0.2);
+  background: var(--bg-secondary);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  margin-top: 60px; // căn bằng với tiêu đề PHIM bên trái
+
+  // Header
+  .tw-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #1a0800 0%, #2d1200 100%);
+    border-bottom: 1px solid rgba(242, 107, 56, 0.25);
+
+    .tw-fire {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .tw-title {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #f26b38;
+      text-transform: uppercase;
+    }
+  }
+
+  // Danh sách phim
+  .tw-list {
+    padding: 8px 0;
+  }
+
+  // Mỗi item
+  .tw-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.08);
+
+    &:last-child { border-bottom: none; }
+
+    &:hover {
+      background: rgba(242, 107, 56, 0.07);
+    }
+
+    // Top 1 — nền nhẹ vàng
+    &.tw-top1 {
+      background: rgba(255, 215, 0, 0.04);
+      &:hover { background: rgba(255, 215, 0, 0.09); }
+    }
+
+    // Số thứ hạng
+    .tw-rank {
+      font-size: 18px;
+      font-weight: 900;
+      min-width: 22px;
+      text-align: center;
+      color: rgba(128, 128, 128, 0.35);
+      font-family: 'Georgia', serif;
+      flex-shrink: 0;
+
+      &.tw-rank-gold {
+        background: linear-gradient(180deg, #FFD700, #FFA500);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      &.tw-rank-silver {
+        background: linear-gradient(180deg, #C0C0C0, #909090);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      &.tw-rank-bronze {
+        background: linear-gradient(180deg, #CD7F32, #9a5a1a);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+    }
+
+    // Poster nhỏ
+    .tw-poster {
+      width: 40px;
+      height: 58px;
+      object-fit: cover;
+      border-radius: 5px;
+      flex-shrink: 0;
+      transition: transform 0.25s;
+    }
+
+    &:hover .tw-poster {
+      transform: scale(1.05);
+    }
+
+    // Info
+    .tw-info {
+      flex: 1;
+      min-width: 0;
       display: flex;
-      max-width: 500px;
-      margin: 0 auto;
-      
-      input {
-        flex: 1;
-        padding: 12px 20px;
-        border: none;
-        border-radius: $border-radius 0 0 $border-radius;
-        outline: none;
+      flex-direction: column;
+      gap: 4px;
+
+      .tw-name {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-main);
+        margin: 0;
+        overflow: hidden;
+        display: -webkit-box;
+        line-clamp: 2;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        line-height: 1.4;
       }
-      button {
-        border-radius: 0 $border-radius $border-radius 0;
+
+      .tw-score {
+        font-size: 11px;
+        font-weight: 600;
+        color: #f5c518;
       }
     }
   }
-}
-
-// Responsive Design (Mobile & Tablet)
-@media (max-width: 768px) {
-  .hero-banner { height: 350px; }
-  .hero-banner .banner-content h1 { font-size: 2rem; }
-  .mid-banner h2 { font-size: 1.8rem; }
-  .newsletter-section .newsletter-form { flex-direction: column; }
-  .newsletter-section .newsletter-form input { border-radius: $border-radius; margin-bottom: 10px; }
-  .newsletter-section .newsletter-form button { border-radius: $border-radius; width: 100%; }
 }

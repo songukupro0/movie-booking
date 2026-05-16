@@ -1,0 +1,352 @@
+// =============================================
+// Booking History Page — Galaxy Cinema
+// =============================================
+
+@keyframes fade-slide-up {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes shimmer-bg {
+  0%   { background-position: -700px 0; }
+  100% { background-position: 700px 0; }
+}
+
+@keyframes dot-bounce {
+  0%, 80%, 100% { transform: translateY(0); }
+  40%            { transform: translateY(-8px); }
+}
+
+// ——— Page Wrapper ———
+.booking-history-page {
+  min-height: calc(100vh - 140px);
+  padding: 56px 16px 72px;
+  background:
+    radial-gradient(ellipse 70% 40% at 15% 5%, rgba(243, 112, 33, 0.07) 0%, transparent 55%),
+    radial-gradient(ellipse 55% 45% at 85% 90%, rgba(0, 114, 188, 0.07) 0%, transparent 50%),
+    linear-gradient(180deg, #06101b 0%, #091422 60%, #0b1829 100%);
+  color: #f8fafc;
+  animation: fade-slide-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  // Page title
+  > h1 {
+    max-width: 1120px;
+    margin: 0 auto 32px;
+    font-size: 2.1rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 1.2em;
+      border-radius: 4px;
+      background: linear-gradient(180deg, #f37021, #ff914d);
+      flex-shrink: 0;
+    }
+  }
+
+  // Loading indicator
+  > p:first-of-type {
+    max-width: 1120px;
+    margin: 0 auto 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #64748b;
+    font-size: 0.97rem;
+  }
+}
+
+// ——— Loading Dots ———
+.loading-dots {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+
+  span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #f37021;
+    animation: dot-bounce 1.2s ease-in-out infinite;
+
+    &:nth-child(2) { animation-delay: 0.2s; }
+    &:nth-child(3) { animation-delay: 0.4s; }
+  }
+}
+
+// ——— Booking Grid ———
+.booking-list {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+// ——— Booking Card ———
+.booking-card {
+  padding: 28px 24px;
+  border-radius: 24px;
+
+  background: rgba(9, 16, 30, 0.88);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+
+  position: relative;
+  overflow: hidden;
+  animation: card-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+
+  // Staggered animation for multiple cards
+  @for $i from 1 through 12 {
+    &:nth-child(#{$i}) { animation-delay: #{($i - 1) * 0.06}s; }
+  }
+
+  // Left accent bar
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 24px;
+    bottom: 24px;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    background: linear-gradient(180deg, #f37021, #ff914d);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: rgba(243, 112, 33, 0.25);
+    box-shadow:
+      0 28px 60px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(243, 112, 33, 0.1) inset;
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  // Movie title
+  h3 {
+    margin: 0 0 18px;
+    font-size: 1.18rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.35;
+    padding-right: 8px;
+  }
+
+  // Info rows
+  p {
+    margin: 0 0 10px;
+    font-size: 0.9rem;
+    color: #64748b;
+    line-height: 1.55;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    // Bold label part
+    strong {
+      color: #94a3b8;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+  }
+}
+
+// ——— Booking Code Badge ———
+.booking-code {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: rgba(243, 112, 33, 0.1);
+  border: 1px solid rgba(243, 112, 33, 0.2);
+  color: #ff914d;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: 'Courier New', monospace;
+  word-break: break-all;
+}
+
+// ——— Payment Status Badge ———
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+
+  &::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  &.paid {
+    background: rgba(34, 197, 94, 0.12);
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    color: #4ade80;
+
+    &::before { background: #22c55e; }
+  }
+
+  &.pending {
+    background: rgba(251, 191, 36, 0.12);
+    border: 1px solid rgba(251, 191, 36, 0.25);
+    color: #fbbf24;
+
+    &::before { background: #f59e0b; }
+  }
+
+  &.cancelled {
+    background: rgba(248, 113, 113, 0.1);
+    border: 1px solid rgba(248, 113, 113, 0.22);
+    color: #f87171;
+
+    &::before { background: #ef4444; }
+  }
+}
+
+// ——— Empty State ———
+.empty-state {
+  max-width: 1120px;
+  margin: 32px auto 0;
+  padding: 56px 32px;
+  border-radius: 24px;
+  text-align: center;
+  background: rgba(9, 16, 30, 0.7);
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+
+  // Big icon area (if added in template)
+  .empty-icon {
+    font-size: 3.5rem;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+
+  p {
+    color: #475569;
+    font-size: 1.05rem;
+    margin: 0 0 24px;
+    line-height: 1.7;
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #f37021, #ff914d);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.97rem;
+    text-decoration: none;
+    box-shadow: 0 8px 24px rgba(243, 112, 33, 0.38);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 32px rgba(243, 112, 33, 0.52);
+    }
+  }
+}
+
+// ——— Error ———
+.error {
+  max-width: 1120px;
+  margin: 0 auto 24px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.22);
+  color: #fca5a5;
+  font-size: 0.93rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  &::before {
+    content: '⚠';
+    flex-shrink: 0;
+  }
+}
+
+// ——— Skeleton Rows ———
+.skeleton-card {
+  padding: 28px 24px;
+  border-radius: 24px;
+  background: rgba(9, 16, 30, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+
+  .skel-line {
+    height: 14px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.04) 0%,
+      rgba(255, 255, 255, 0.09) 50%,
+      rgba(255, 255, 255, 0.04) 100%
+    );
+    background-size: 700px 100%;
+    animation: shimmer-bg 1.7s ease-in-out infinite;
+
+    &.w-60 { width: 60%; }
+    &.w-80 { width: 80%; }
+    &.w-40 { width: 40%; }
+  }
+}
+
+// ——— Responsive ———
+@media (max-width: 768px) {
+  .booking-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .booking-history-page {
+    padding: 32px 12px 48px;
+
+    > h1 {
+      font-size: 1.65rem;
+    }
+  }
+
+  .booking-card {
+    padding: 22px 18px;
+  }
+}

@@ -1,1 +1,59 @@
-<p>seat-selection works!</p>
+<div class="seat-selection-page">
+  <div class="container">
+    <!-- Header: Movie Info -->
+    <div class="booking-header">
+      <h2>{{ movieInfo().title }}</h2>
+      <p>{{ movieInfo().cinema }} | Phòng: {{ movieInfo().room }} | Suất: {{ movieInfo().showtime }}</p>
+    </div>
+
+    <div class="cinema-layout">
+      <!-- Screen -->
+      <div class="screen">MÀN HÌNH</div>
+
+      <!-- Seat Grid -->
+      <div class="seat-grid">
+        <div class="seat-row" *ngFor="let row of seats()">
+          <div class="row-label">{{ row[0].id.charAt(0) }}</div>
+          <div 
+            *ngFor="let seat of row" 
+            class="seat"
+            [ngClass]="{
+              'available': seat.status === 'available',
+              'selected': seat.status === 'selected',
+              'occupied': seat.status === 'occupied'
+            }"
+            (click)="toggleSeat(seat)">
+            {{ seat.id.substring(1) }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div class="legend">
+        <div class="legend-item"><div class="seat available"></div><span>Ghế trống</span></div>
+        <div class="legend-item"><div class="seat selected"></div><span>Ghế đang chọn</span></div>
+        <div class="legend-item"><div class="seat occupied"></div><span>Ghế đã bán</span></div>
+      </div>
+    </div>
+
+    <!-- Booking Summary -->
+    <div class="booking-summary">
+      <div class="summary-item">
+        <h4>Ghế đã chọn ({{ selectedSeats().length }})</h4>
+        <p class="selected-seats-list">
+          {{ selectedSeats().length > 0 ? selectedSeatIds() : 'Chưa chọn ghế' }}
+        </p>
+      </div>
+      <div class="summary-item total">
+        <h4>Tổng cộng</h4>
+        <p class="total-price">{{ totalPrice() | number:'1.0-0':'vi' }} VNĐ</p>
+      </div>
+      <button 
+        class="btn-book" 
+        (click)="bookSeats()" 
+        [disabled]="selectedSeats().length === 0">
+        Thanh toán
+      </button>
+    </div>
+  </div>
+</div>
